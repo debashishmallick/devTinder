@@ -1,52 +1,34 @@
 const express = require("express");
 
+const connectDB = require("./config/database");
 const app = express();
+const User = require("./models/user");
 
-// app.use("/data",(req,res)=>{
-//     res.send("hello from the data")
-// })
+app.post("/signup", async (req, res) => {
+  const user = new User({
+    firstName: "Virat",
+    lastName: "Kohli",
+    emailId: "viratkohli@gmail.com",
+    password: "virat@123",
+    age: 34,
+  });
 
-app.get(
-  "/user",
-  [(req, res,next) => {
-    console.log("handel 1st routing");
-    // res.send("response");
-    next()
-  },
-  (req, res,next) => {
-    console.log("handel 2nd routing");
-    // res.send("2nd response");
-    next()
-  },
-  (req, res,next) => {
-    console.log("handel 3rd routing");
-    // res.send("3rd response");
-    next()
-  },
-  (req, res,next) => {
-    console.log("handel 4th routing");
-    // res.send("4th response");
-    next()
-  },
-  (req, res,next) => {
-    console.log("handel 5th routing");
-    res.send("5th response");
-    
-  },]
-);
-
-// app.post("/user",(req,res)=>{
-//     res.send("data susscessfully save in DB")
-// })
-
-// app.delete("/user",(req,res)=>{
-//     res.send("delete susscessfully in DB")
-// })
-
-// app.use("/test",(req,res)=>{
-//     res.send("hello from the server for test")
-// })
-
-app.listen(2001, () => {
-  console.log("server is sucssesful runing on 2001");
+  try {
+    await user.save();
+    res.send("User Added Successfuly");
+  } catch (err) {
+    res.status(400).send("Error saving the user:" + err.messege);
+  }
 });
+
+connectDB()
+  .then(() => {
+    console.log("database connection successful...");
+
+    app.listen(2001, () => {
+      console.log("server is sucssesfull runing on 2001");
+    });
+  })
+  .catch((err) => {
+    console.error("database can't connected...");
+  });
