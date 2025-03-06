@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const userSchema = new mongoose.Schema({
     firstName:{
         type:String,
@@ -35,9 +34,12 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-    skill:{
+    skills:{
         type:[String],
     },
+    // photoUrl:{
+    //     type:String
+    // },
     about:{
         type:String,
         default:"About is default value"

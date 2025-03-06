@@ -13,7 +13,7 @@ app.post("/signup", async (req, res) => {
   try {
     await user.save();
     res.send("User Added Successfuly");
-  } catch (err) { 
+  } catch (err) {
     res.status(400).send("Error saving the user:" + err.message);
   }
 });
@@ -56,19 +56,31 @@ app.delete("/user", async (req, res) => {
 });
 
 //Update User Data..
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
   const data = req.body;
+
   try {
-    const user = await User.findByIdAndUpdate(userId, data, 
-      {
+    const ALLOWED_UPDATE = ["about", "gender", "age", "skills"];
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATE.includes(k)
+    );
+    console.log(isUpdateAllowed);
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed !!!");
+    }
+
+    if(data.skills.length>10){
+      throw new Error("You Can't Store more than 10 Skills")
+    }
+
+    await User.findByIdAndUpdate(userId, data, {
       returnDocument: "after",
       runValidators: true,
-    }
-  );
+    });
     res.send("update successfuly!!!");
-  } catch (error) {
-    res.status(400).send("Update Failed !!" + error.message);
+  } catch (err) {
+    res.status(400).send("Update Failed !!! " + err.message);
   }
 });
 
