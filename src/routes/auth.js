@@ -23,8 +23,14 @@ authRouter.post("/signup", async (req, res) => {
       password: passwordHash,
     });
 
-    await user.save();
-    res.send("User Added Successfuly");
+    const savedUser = await user.save();
+
+    const token = await savedUser.getJWT();
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
+
+    res.json({ message: "User Added Successfuly", data: savedUser });
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
   }
@@ -37,7 +43,7 @@ authRouter.post("/login", async (req, res) => {
     //check email validation
     const user = await User.findOne({ emailId: emailId });
     if (!user) {
-      throw new Error("invalid user");
+      throw new Error("Invalid user!!!");
     }
 
     //check password compare validation
@@ -52,12 +58,12 @@ authRouter.post("/login", async (req, res) => {
         expires: new Date(Date.now() + 8 * 3600000),
       });
 
-      res.send("Login Successfully...");
+      res.send(user);
     } else {
-      throw new Error("invalid password");
+      throw new Error("Invalid password!!!");
     }
   } catch (error) {
-    res.status(400).send("ERROR : " + error.message);
+    res.status(400).send(error.message);
   }
 });
 

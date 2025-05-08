@@ -3,7 +3,15 @@ const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
 const cookieParser = require("cookie-parser"); //reading cookies
+const cors =require("cors")
 
+app.use(cors({
+  origin:"http://localhost:5173",
+  methods:['GET', 'POST', 'PUT', 'PATCH', 'DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}))
+// app.options('*', cors()); // Allow preflight across all routes
 app.use(express.json());
 app.use(cookieParser());
 
@@ -87,7 +95,7 @@ connectDB()
   .then(() => {
     console.log("database connection successful...");
 
-    app.listen(2001, () => {
+    app.listen(7777, () => {
       console.log("server is sucssesfull runing on 2001");
     });
   })
