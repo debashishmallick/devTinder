@@ -95,8 +95,8 @@ connectDB()
   .then(() => {
     console.log("database connection successful...");
 
-    app.listen(7777, () => {
-      console.log("server is sucssesfull runing on 7777");
+    app.listen(7788, () => {
+      console.log("server is sucssesfull runing on 7788");
     });
   })
   .catch((err) => {
