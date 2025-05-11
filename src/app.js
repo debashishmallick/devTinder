@@ -5,6 +5,8 @@ const app = express();
 const cookieParser = require("cookie-parser"); //reading cookies
 const cors =require("cors")
 
+require("dotenv").config();
+
 app.use(cors({
   origin:"http://localhost:5173",
   methods:['GET', 'POST', 'PUT', 'PATCH', 'DELETE','OPTIONS'],
@@ -95,7 +97,7 @@ connectDB()
   .then(() => {
     console.log("database connection successful...");
 
-    app.listen(7788, () => {
+    app.listen(process.env.PORT, () => {
       console.log("server is sucssesfull runing on 7788");
     });
   })
