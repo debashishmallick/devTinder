@@ -48,43 +48,43 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
   }
 });
 
-paymentRouter.post("/payment/webhook", async (req, res) => {
-  try {
+// paymentRouter.post("/payment/webhook", async (req, res) => {
+//   try {
 
-    const webhookSignature = req.get("X-Razorpay-Signature");
+//     const webhookSignature = req.get("X-Razorpay-Signature");
     
-    const isWebHookValid = validateWebhookSignature(JSON.stringify(req.body), webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET);
+//     const isWebHookValid = validateWebhookSignature(JSON.stringify(req.body), webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET);
 
-    if (!isWebHookValid){
-      return res.status(400).json({ msg: "Invalid webhook signature" });
-    }
+//     if (!isWebHookValid){
+//       return res.status(400).json({ msg: "Invalid webhook signature" });
+//     }
 
-    //update payment status in database
-    const paymentDetails = req.body.payload.payment.entity
+//     //update payment status in database
+//     const paymentDetails = req.body.payload.payment.entity
 
-    const payment = await Payment.findOne({orderId:paymentDetails.order_id})
+//     const payment = await Payment.findOne({orderId:paymentDetails.order_id})
 
-    payment.status = paymentDetails.status;
-    await payment.save();
+//     payment.status = paymentDetails.status;
+//     await payment.save();
 
-    const user = await User.findOne({_id:payment.userId});
-    user.isPremium = true;
-    user.membershipType = payment.notes.membershipType;
-    await user.save();
+//     const user = await User.findOne({_id:payment.userId});
+//     user.isPremium = true;
+//     user.membershipType = payment.notes.membershipType;
+//     await user.save();
 
-    //update user as premium
+//     //update user as premium
 
-    // if(req.body.event === "payment.captured"){}
-    // if(req.body.event === "payment.failed"){}
+//     // if(req.body.event === "payment.captured"){}
+//     // if(req.body.event === "payment.failed"){}
 
-    //return success response to razorpay
-    res.status(200).json({ msg: "Webhook received" });
+//     //return success response to razorpay
+//     res.status(200).json({ msg: "Webhook received" });
   
 
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
-  }
-});
+//   } catch (error) {
+//     return res.status(500).json({ msg: error.message });
+//   }
+// });
 
 module.exports = paymentRouter;
 
